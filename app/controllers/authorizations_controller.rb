@@ -8,11 +8,11 @@ class AuthorizationsController < ApplicationController
       flash[:notice] = "Successfully added #{omniauth['provider']} authentication"
       current_user.authorizations.create(:provider => omniauth['provider'], :uid => omniauth['uid']) #Add an auth to existing user
     elsif @auth
-      flash[:notice] = "Welcome back #{omniauth['provider']} user"
+      flash[:notice] = "Welcome back #{omniauth['user_info']['name']}  #{omniauth['user_info']['email']}"
       UserSession.create(@auth.user, true) #User is present. Login the user with his social account
     else  
       @new_auth = Authorization.create_from_hash(omniauth, current_user) #Create a new user
-      flash[:notice] = "Welcome #{omniauth['provider']} user. Your account has been created."
+      flash[:notice] = "Welcome #{omniauth['user_info']['name']}. Your account has been created."
       UserSession.create(@new_auth.user, true) #Log the authorizing user in.
     end
     redirect_to root_url
